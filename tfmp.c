@@ -1,18 +1,52 @@
 #define VIOLET_IMPLEMENTATION
 #define VIOLET_NO_GUI
+#define VIOLET_NO_MAIN
 #include "violet.h"
 
 #include "testfit/types.h"
 #include "testfit/measure.h"
 #include "testfit/utility.h"
 #include "testfit/opts.h"
+#include "testfit/opt.h"
 #include "testfit/mass_placement.h"
 #include "testfit/mp_utility.h"
 #include "testfit/debug.h"
 #include "testfit/poly.h"
 
+void tfmp_free(v2f *poly_verts, u32 *poly_lengths);
+int  tfmp_generate_bldg(const v2f *v, u32 n, r32 mass_width, r32 mass_height,
+                        r32 aspect_ratio, v2f **poly_verts, u32 *num_verts,
+                        u32 **poly_lengths, u32 *num_lengths);
+
+static
+void linearize_extrusion_buffers(array(v2f*) extrusions,
+                                 v2f **poly_verts, u32 *num_verts,
+                                 u32 **poly_lengths, u32 *num_lengths)
+{
+	v2f *pvert;
+	u32 *plen;
+
+	*num_lengths = array_sz(extrusions);
+	*num_verts = 0;
+	array_foreach(extrusions, v2f*, extrusion)
+		*num_verts += array_sz(*extrusion);
+
+	*poly_verts = malloc(*num_verts * sizeof(v2f));
+	*poly_lengths = malloc(*num_lengths * sizeof(u32));
+
+	pvert = *poly_verts;
+	plen  = *poly_lengths;
+	array_foreach(extrusions, v2f*, extrusion) {
+		const u32 len = array_sz(*extrusion);
+		memcpy(pvert, *extrusion, len * sizeof(v2f));
+		pvert += len;
+		*plen++ = len;
+	}
+}
+
 int tfmp_generate_bldg(const v2f *v, u32 n, r32 mass_width, r32 mass_height,
-                       r32 aspect_ratio)
+                       r32 aspect_ratio, v2f **poly_verts, u32 *num_verts,
+                       u32 **poly_lengths, u32 *num_lengths)
 {
 	temp_memory_mark_t tmem_mark;
 	array(v2f) boundary;
@@ -22,12 +56,10 @@ int tfmp_generate_bldg(const v2f *v, u32 n, r32 mass_width, r32 mass_height,
 	array(v2f*) extrusions;
 	int ret = 1;
 
-	for (u32 i = 0; i < n; ++i)
-		printf("<%.0f,%.0f>,", v[i].x, v[i].y);
-	printf("\n");
-	goto outx;
-
 	vlt_init(VLT_THREAD_MAIN);
+	set_measurement_system(MEASURE_IMPERIAL);
+	opt_set_measurement_system(MEASURE_IMPERIAL);
+
 	tmem_mark = temp_memory_save(g_temp_allocator);
 
 	array_init(boundary, n);
@@ -57,23 +89,39 @@ int tfmp_generate_bldg(const v2f *v, u32 n, r32 mass_width, r32 mass_height,
 
 	array_init(graphs, 4);
 
+	array_init(extrusions, 2);
+
 	try {
 		mp_generate_spines(basis, &graphs);
 		if (array_empty(graphs))
 			goto out;
 
-		array_init(extrusions, 2);
-
 		mp_extrude_depr(graphs[0].guides, opts.corridor_width/2,
 		                opts.path_width/2, &extrusions);
+
+		linearize_extrusion_buffers(extrusions, poly_verts, num_verts,
+		                            poly_lengths, num_lengths);
 		ret = 0;
 	} catch {
 		goto out;
 	} finally;
 
 out:
+	array_foreach(extrusions, v2f*, extrusion)
+		array_destroy(*extrusion);
+	array_destroy(extrusions);
+	array_foreach(graphs, mp_graph_t, graph)
+		mp_graph_destroy(graph);
+	array_destroy(graphs);
+	opts_destroy(&opts);
+	array_destroy(boundary);
 	temp_memory_restore(tmem_mark);
 	vlt_destroy(VLT_THREAD_MAIN);
-outx:
 	return ret;
+}
+
+void tfmp_free(v2f *poly_verts, u32 *poly_lengths)
+{
+	free(poly_verts);
+	free(poly_lengths);
 }

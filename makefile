@@ -7,8 +7,12 @@ HEADERS := testfit/ctyd.h testfit/debug.h testfit/mass_placement.h testfit/measu
 SOURCES := testfit/mass_placement.c testfit/measure.c testfit/mp_utility.c testfit/opt.c testfit/opts.c testfit/poly.c testfit/utility.c tfmp.c
 
 libtfmp.so: $(HEADERS) $(SOURCES)
-	$(CC) -fPIC -shared -I. $(CCFLAGS) $(SOURCES) -o libtfmp.so
+	$(CC) -fPIC -shared -I. $(CCFLAGS) $(SOURCES) -o libtfmp.so -ldl -lm
+
+tfmp: main.c libtfmp.so
+	$(CC) -I. main.c -o tfmp -L. -Wl,-rpath=. -ltfmp
 
 .PHONY: clean
 clean:
 	rm -f libtfmp.so
+	rm -f tfmp
