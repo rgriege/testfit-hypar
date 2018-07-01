@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <Target Name="Copy C Library" AfterTargets="build">
-    <!--Exec Command="make libtest.so" /-->
-    <Copy SourceFiles="libtest.so" DestinationFolder="$(OutDir)" />
+    <!--Exec Command="make libtfmp.so" /-->
+    <Copy SourceFiles="libtfmp.so" DestinationFolder="$(OutDir)" />
   </Target>
 </Project>
