@@ -5,6 +5,10 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="HyparSDK" Version="0.0.1-beta8" />
+  </ItemGroup>
+
   <Target Name="Copy C Library" AfterTargets="build">
     <!--Exec Command="make libtfmp.so" /-->
     <Copy SourceFiles="libtfmp.so" DestinationFolder="$(OutDir)" />
