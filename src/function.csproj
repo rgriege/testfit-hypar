@@ -15,4 +15,7 @@
   <Target Name="Copy C Library" AfterTargets="build">
     <Copy SourceFiles="..\libtfmp.so" DestinationFolder="$(OutDir)" />
   </Target>
+  <Target Name="Copy C Library" AfterTargets="publish">
+    <Copy SourceFiles="..\libtfmp.so" DestinationFolder="$(OutDir)\publish" />
+  </Target>
 </Project>
