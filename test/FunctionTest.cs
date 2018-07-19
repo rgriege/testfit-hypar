@@ -22,9 +22,6 @@ namespace test
         {
             var func = new Function();
             var result = func.Handler(_data, null);
-
-            File.WriteAllText("sample.glb", result["model"].ToString());
-
             var json = JsonConvert.SerializeObject(result);
             Console.WriteLine(json);
         }
