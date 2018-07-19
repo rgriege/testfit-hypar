@@ -32,6 +32,10 @@
   },
   "respository_url": null,
   "returns": {
+    "result": {
+      "description": "The result",
+      "type": "number"
+    }
   },
   "version": "0.0.1"
 }
