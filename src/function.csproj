@@ -10,4 +10,8 @@
     <PackageReference Include="Amazon.Lambda.Serialization.Json" Version="1.3.0" />
     <PackageReference Include="HyparSDK" Version="0.0.1-beta8" />
   </ItemGroup>
+
+  <Target Name="Copy C Library" AfterTargets="build">
+    <Copy SourceFiles="..\libtfmp.so" DestinationFolder="$(OutDir)" />
+  </Target>
 </Project>
