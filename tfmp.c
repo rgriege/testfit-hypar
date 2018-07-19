@@ -57,8 +57,8 @@ int tfmp_generate_bldg(const v2f *v, u32 n, r32 mass_width, r32 mass_height,
 	int ret = 1;
 
 	vlt_init(VLT_THREAD_MAIN);
-	set_measurement_system(MEASURE_IMPERIAL);
-	opt_set_measurement_system(MEASURE_IMPERIAL);
+	set_measurement_system(MEASURE_METRIC);
+	opt_set_measurement_system(MEASURE_METRIC);
 
 	tmem_mark = temp_memory_save(g_temp_allocator);
 
