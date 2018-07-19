@@ -27,17 +27,12 @@
 						[
 							-96.78204,
 							32.78411
-						],
+						]
 					]
 				]
 			},
 			"type": "Feature",
-			"properties": {
-				"ain": "4210033009",
-				"situsaddr": "11061 BARMAN AVE",
-				"situscity": "CULVER CITY CA",
-				"situszip_5": "90230"
-			}
+			"properties": {}
 		}
 	]
 }
