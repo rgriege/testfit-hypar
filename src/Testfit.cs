@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 using Hypar.Elements;
 using Hypar.Geometry;
 
-namespace dotnet_test
+namespace Testfit
 {
     [StructLayout(LayoutKind.Sequential)]
     struct v2f
@@ -13,7 +13,7 @@ namespace dotnet_test
         public float y;
     }
 
-    class MeshElement : Proxy
+    public class MeshElement : Proxy
     {
         private Mesh _mesh;
 
@@ -28,44 +28,52 @@ namespace dotnet_test
         }
     }
 
-    class Program
+    public class Building
     {
-        [DllImport("libtfmp.so")]
-        public static extern int tfmp_generate_bldg(v2f[] boundary, uint n,
-                                                    float mass_width,
-                                                    float mass_height,
-                                                    float aspect_ratio,
-                                                    out IntPtr poly_verts,
-                                                    out uint num_verts,
-                                                    out IntPtr poly_lengths,
-                                                    out uint num_lengths);
+        public List<Polyline> Polylines {get;}
 
         [DllImport("libtfmp.so")]
-        public static extern int tfmp_free(IntPtr poly_verts,
-                                           IntPtr poly_lengths);
+        static extern int tfmp_generate_bldg(v2f[] boundary, uint n,
+                                             float mass_width,
+                                             float mass_height,
+                                             float aspect_ratio,
+                                             out IntPtr poly_verts,
+                                             out uint num_verts,
+                                             out IntPtr poly_lengths,
+                                             out uint num_lengths);
 
-        static void Main(string[] args)
+        [DllImport("libtfmp.so")]
+        static extern int tfmp_free(IntPtr poly_verts,
+                                    IntPtr poly_lengths);
+
+        Building() {}
+        Building(List<Polyline> polylines)
         {
-            v2f[] boundary = {
-                new v2f{ x=0.0f,   y=0.0f },
-                new v2f{ x=200.0f, y=0.0f },
-                new v2f{ x=200.0f, y=200.0f },
-                new v2f{ x=0.0f,   y=200.0f },
-            };
-						IntPtr poly_verts;
-						IntPtr poly_lengths;
-						uint num_verts;
-						uint num_lengths;
-						int ret;
+            Polylines = polylines;
+        }
 
-            ret = tfmp_generate_bldg(boundary, (uint)boundary.Length,
-                                     60.0f, 40.0f, 0.5f,
+        public static Building Make(Vector3[] boundary, float width, float height, float aspect)
+        {
+            v2f[] boundary2 = new v2f[boundary.Length];
+            for (int i = 0; i < boundary.Length; ++i)
+            {
+                boundary2[i].x = (float)boundary[i].X;
+                boundary2[i].y = (float)boundary[i].Y;
+            }
+            IntPtr poly_verts;
+            IntPtr poly_lengths;
+            uint num_verts;
+            uint num_lengths;
+            int ret;
+
+            ret = tfmp_generate_bldg(boundary2, (uint)boundary2.Length,
+                                     width, height, aspect,
                                      out poly_verts, out num_verts,
                                      out poly_lengths, out num_lengths);
 
             if (ret != 0) {
                 Console.WriteLine("tfmp_generate_bldg() failed");
-                return;
+                return new Building();
             }
 
             List<Polyline> polylines = new List<Polyline>();
@@ -87,11 +95,7 @@ namespace dotnet_test
             }
 
             tfmp_free(poly_verts, poly_lengths);
-
-            var model = new Model();
-            var mesh = new MeshElement(Mesh.Extrude(polylines, 10.0));
-            model.AddElement(mesh);
-            model.SaveGlb("test.glb");
+            return new Building(polylines);
         }
     }
 }
