@@ -46,7 +46,11 @@ namespace Testfit
         static extern int tfmp_free(IntPtr poly_verts,
                                     IntPtr poly_lengths);
 
-        Building() {}
+        Building()
+        {
+            Polylines = new List<Polyline>();
+        }
+
         Building(List<Polyline> polylines)
         {
             Polylines = polylines;

@@ -1,0 +1,37 @@
+{
+  "description": "A function from testfit to generate simple buildings.",
+  "function": "testfit-makebuilding::Hypar.Function::Handler",
+  "function_id": "testfit-makebuilding",
+  "runtime": "dotnetcore2.0",
+  "parameters": {
+    "boundary": {
+      "description": "Site boundary polygon",
+      "type": "location"
+    },
+    "width": {
+      "min": 40.0,
+      "max": 120.0,
+      "step": 1.0,
+      "description": "Building mass width.",
+      "type": "number"
+    },
+    "height": {
+      "min": 10.0,
+      "max": 200.0,
+      "step": 10.0,
+      "description": "Building mass height.",
+      "type": "number"
+    },
+    "aspectRatio": {
+      "min": 0.0,
+      "max": 1.0,
+      "step": 0.05,
+      "description": "Maximum height/width aspect ratio for courtyards.",
+      "type": "number"
+    }
+  },
+  "respository_url": null,
+  "returns": {
+  },
+  "version": "0.0.1"
+}

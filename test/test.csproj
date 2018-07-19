@@ -22,4 +22,8 @@
     <Copy SourceFiles="..\libtfmp.so" DestinationFolder="$(OutDir)" />
   </Target>
 
+  <Target Name="Copy Sample File" AfterTargets="build">
+    <Copy SourceFiles="sample.json" DestinationFolder="$(OutDir)" />
+  </Target>
+
 </Project>
