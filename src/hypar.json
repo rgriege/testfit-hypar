@@ -9,16 +9,16 @@
       "type": "location"
     },
     "width": {
-      "min": 40.0,
-      "max": 120.0,
+      "min": 10.0,
+      "max": 40.0,
       "step": 1.0,
       "description": "Building mass width.",
       "type": "number"
     },
     "height": {
-      "min": 10.0,
-      "max": 200.0,
-      "step": 10.0,
+      "min": 4.0,
+      "max": 64.0,
+      "step": 1.0,
       "description": "Building mass height.",
       "type": "number"
     },
