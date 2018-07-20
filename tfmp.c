@@ -80,7 +80,7 @@ int tfmp_generate_bldg(const v2f *v, u32 n, r32 mass_width, r32 mass_height,
 	opts.lifts_enabled = false;
 	opts.num_amenities = 0;
 	opts.units_enabled = false;
-	opts.min_unit_width = 10.f;
+	opts.min_unit_width = 3.f; // MARK
 	opts.add_balconies = false;
 
 	basis.boundary = boundary;
