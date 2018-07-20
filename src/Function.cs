@@ -30,7 +30,7 @@ namespace Hypar
 
             var model = new Model();
             model.Origin = origin;
-            var mesh = new MeshElement(Mesh.Extrude(building.Polylines, 10.0));
+            var mesh = new MeshElement(Mesh.Extrude(building.Polylines, height));
             model.AddElement(mesh);
             return model.ToHypar();
         }
