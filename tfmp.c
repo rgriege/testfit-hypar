@@ -12,11 +12,7 @@
 #include "testfit/mp_utility.h"
 #include "testfit/debug.h"
 #include "testfit/poly.h"
-
-void tfmp_free(v2f *poly_verts, u32 *poly_lengths);
-int  tfmp_generate_bldg(const v2f *v, u32 n, r32 mass_width, r32 mass_height,
-                        r32 aspect_ratio, v2f **poly_verts, u32 *num_verts,
-                        u32 **poly_lengths, u32 *num_lengths);
+#include "tfmp.h"
 
 static
 void linearize_extrusion_buffers(array(v2f*) extrusions,
@@ -44,9 +40,9 @@ void linearize_extrusion_buffers(array(v2f*) extrusions,
 	}
 }
 
-int tfmp_generate_bldg(const v2f *v, u32 n, r32 mass_width, r32 mass_height,
-                       r32 aspect_ratio, v2f **poly_verts, u32 *num_verts,
-                       u32 **poly_lengths, u32 *num_lengths)
+int tfmp__generate_bldg(const v2f *v, u32 n, r32 mass_width, r32 mass_height,
+                        r32 aspect_ratio, v2f **poly_verts, u32 *num_verts,
+                        u32 **poly_lengths, u32 *num_lengths)
 {
 	temp_memory_mark_t tmem_mark;
 	array(v2f) boundary;
@@ -55,10 +51,6 @@ int tfmp_generate_bldg(const v2f *v, u32 n, r32 mass_width, r32 mass_height,
 	array(mp_graph_t) graphs;
 	array(v2f*) extrusions;
 	int ret = 1;
-
-	vlt_init(VLT_THREAD_MAIN);
-	set_measurement_system(MEASURE_METRIC);
-	opt_set_measurement_system(MEASURE_METRIC);
 
 	tmem_mark = temp_memory_save(g_temp_allocator);
 
@@ -116,6 +108,19 @@ out:
 	opts_destroy(&opts);
 	array_destroy(boundary);
 	temp_memory_restore(tmem_mark);
+	return ret;
+}
+
+int tfmp_generate_bldg(const v2f *v, u32 n, r32 mass_width, r32 mass_height,
+                       r32 aspect_ratio, v2f **poly_verts, u32 *num_verts,
+                       u32 **poly_lengths, u32 *num_lengths)
+{
+	int ret;
+	vlt_init(VLT_THREAD_MAIN);
+	set_measurement_system(MEASURE_METRIC);
+	opt_set_measurement_system(MEASURE_METRIC);
+	ret = tfmp__generate_bldg(v, n, mass_width, mass_height, aspect_ratio,
+	                          poly_verts, num_verts, poly_lengths, num_lengths);
 	vlt_destroy(VLT_THREAD_MAIN);
 	return ret;
 }

@@ -10,8 +10,8 @@ SOURCES := testfit/mass_placement.c testfit/measure.c testfit/mp_utility.c testf
 libtfmp.so: $(HEADERS) $(SOURCES)
 	$(CC) -fPIC -shared -I. $(CCFLAGS) $(SOURCES) -o libtfmp.so -ldl -lm
 
-tfmp: main.c libtfmp.so
-	$(CC) -I. main.c -o tfmp -L. -Wl,-rpath=. -ltfmp
+tfmp: main.c libtfmp.so json/json.c json/json.h
+	$(CC) -I. main.c json/json.c -o tfmp -L. -Wl,-rpath=. -ltfmp -ld
 
 .PHONY: clean
 clean:
