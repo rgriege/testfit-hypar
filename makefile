@@ -11,7 +11,7 @@ libtfmp.so: $(HEADERS) $(SOURCES)
 	$(CC) -fPIC -shared -I. $(CCFLAGS) $(SOURCES) -o libtfmp.so -ldl -lm
 
 tfmp: main.c libtfmp.so json/json.c json/json.h
-	$(CC) -I. main.c json/json.c -o tfmp -L. -Wl,-rpath=. -ltfmp -ld
+	$(CC) -I. main.c json/json.c -o tfmp -L. -Wl,-rpath=. -ltfmp -lm
 
 .PHONY: clean
 clean:
