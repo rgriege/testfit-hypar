@@ -229,7 +229,6 @@ void parse_boundary(const struct json_array_s *array, array(v2f) *boundary)
 
 	object_elem = object->start;
 	while (object_elem) {
-		const struct json_string_s *name = object_elem->name;
 		if (   object_elem->value->type == json_type_object
 		    && json_name_eq(object_elem->name, "geometry"))
 			parse_geometry(object_elem->value->payload, boundary);
@@ -309,7 +308,7 @@ int main(int argc, char *const argv[])
 	v2f *poly_verts;
 	u32 *poly_lengths;
 	u32 num_verts, num_lengths;
-	int ret;
+	int ret = 1;
 	u32 vert_start = 0;
 
 	vlt_init(VLT_THREAD_MAIN);
@@ -320,10 +319,7 @@ int main(int argc, char *const argv[])
 
 	if (argc > 1) {
 		printf("loading file %s\n", argv[1]);
-		if (load(argv[1], &params)) {
-			if (!polyf_is_cc(A2PN(params.boundary)))
-				array_reverse(params.boundary);
-		} else {
+		if (!load(argv[1], &params)) {
 			printf("load(%s) failed\n", argv[1]);
 			goto out;
 		}

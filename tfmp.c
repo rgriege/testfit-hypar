@@ -57,6 +57,8 @@ int tfmp__generate_bldg(const v2f *v, u32 n, r32 mass_width, r32 mass_height,
 	array_init(boundary, n);
 	array_set_sz(boundary, n);
 	memcpy(boundary, v, n * sizeof(*v));
+	if (!polyf_is_cc(A2PN(boundary)))
+		array_reverse(boundary);
 
 	opts_init(&opts);
 	opts_default(&opts);
