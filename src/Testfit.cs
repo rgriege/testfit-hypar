@@ -77,7 +77,7 @@ namespace Testfit
 
             if (ret != 0) {
                 Console.WriteLine("tfmp_generate_bldg() failed");
-                return new Building();
+                throw new Exception("Building generation failed");
             }
 
             List<Polyline> polylines = new List<Polyline>();
