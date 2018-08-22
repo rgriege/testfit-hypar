@@ -2,6 +2,7 @@
   "description": "A function from testfit to generate simple buildings.",
   "function": "testfit-makebuilding::Hypar.Function::Handler",
   "function_id": "testfit-makebuilding",
+  "name": "Make Building",
   "runtime": "dotnetcore2.0",
   "parameters": {
     "boundary": {
@@ -30,7 +31,7 @@
       "type": "number"
     }
   },
-  "respository_url": null,
+  "respository_url": "https://github.com/rgriege/testfit-hypar",
   "returns": {
     "result": {
       "description": "The result",
